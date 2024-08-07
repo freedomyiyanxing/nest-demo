@@ -13,7 +13,7 @@ export class PersonService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} person`;
+    return `This action returns a #${id} person params`;
   }
 
   update(id: number, updatePersonDto: UpdatePersonDto) {

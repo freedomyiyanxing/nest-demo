@@ -1,34 +1,48 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  UseInterceptors,
+  UploadedFiles, Inject,
+} from '@nestjs/common';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { PersonService } from './person.service';
 import { CreatePersonDto } from './dto/create-person.dto';
-import { UpdatePersonDto } from './dto/update-person.dto';
+import { AaaService } from '../aaa/aaa.service';
 
-@Controller('person')
+@Controller('api/person')
 export class PersonController {
-  constructor(private readonly personService: PersonService) {}
+  @Inject()
+  private readonly aaaService: AaaService;
 
-  @Post()
-  create(@Body() createPersonDto: CreatePersonDto) {
-    return this.personService.create(createPersonDto);
+  constructor(private readonly personService: PersonService) {
   }
 
-  @Get()
-  findAll() {
-    return this.personService.findAll();
+  @Get('find')
+  query(@Query('name') name: string, @Query('age') age: number) {
+    this.aaaService.getName('person')
+    return `received: name=${name},age=${age}`;
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.personService.findOne(+id);
+  urlParams(@Param('id') id: string) {
+    return `received: id=${id}`;
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePersonDto: UpdatePersonDto) {
-    return this.personService.update(+id, updatePersonDto);
+  @Post()
+  body(@Body() createPersonDto: CreatePersonDto) {
+    return `received: name: ${createPersonDto.name}; age: ${createPersonDto.age}`;
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.personService.remove(+id);
+  @Post('file')
+  @UseInterceptors(AnyFilesInterceptor({
+    dest: 'uploads/'
+  }) as any)
+  body2(@UploadedFiles() files: Array<Express.Multer.File>) {
+    console.log(files);
+    return `received: ${files.map((v) => v.filename)}`
   }
 }

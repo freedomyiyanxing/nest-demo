@@ -1,0 +1,80 @@
+<!--
+* Copyright (c) 2024 湖南数字侠软件有限公司
+* @author freedom.yi
+* @date 2024/8/7
+* @project nest-demo
+*
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SHT</title>
+  <script src="https://unpkg.com/axios@0.24.0/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/qs@6.10.2/dist/qs.js"></script>
+</head>
+<body>
+<div>freedom.yi</div>
+
+<input id="fileInput" type="file" multiple/>
+
+<script>
+  async function urlParam() {
+    const res = await axios.get('/api/person/123');
+    console.log(res);
+  }
+
+  async function query() {
+    const res = await axios.get('/api/person/find', {
+      params: {
+        name: '星',
+        age: 18
+      }
+    });
+    console.log(res);
+  }
+
+  async function formUrlEncoded() {
+    const res = await axios.post('/api/person', Qs.stringify({
+      name: '星',
+      age: 20
+    }), {
+      headers: { 'content-type': 'application/x-www-form-urlencoded' }
+    });
+    console.log(res);
+  }
+
+  async function json() {
+    const res = await axios.post('/api/person', {
+      name: 'json',
+      age: 20
+    });
+    console.log(res);
+  }
+
+  const fileInput = document.querySelector('#fileInput');
+
+  async function formData() {
+    const data = new FormData();
+
+    for (let i = 0; i < fileInput.files.length; i++) {
+      const v =  fileInput.files[i];
+      data.set(`file${i}`, v);
+    }
+
+    const res = await axios.post('/api/person/file', data, {
+      headers: { 'content-type': 'multipart/form-data' }
+    });
+    console.log(res);
+  }
+
+  fileInput.onchange = formData;
+
+  json();
+
+  formUrlEncoded();
+  query();
+  urlParam();
+</script>
+</body>
+</html>
