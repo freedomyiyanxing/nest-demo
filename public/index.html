@@ -59,10 +59,10 @@
 
     for (let i = 0; i < fileInput.files.length; i++) {
       const v =  fileInput.files[i];
-      data.set(`file${i}`, v);
+      data.set('file', v);
     }
 
-    const res = await axios.post('/api/person/file', data, {
+    const res = await axios.post('/book/upload', data, {
       headers: { 'content-type': 'multipart/form-data' }
     });
     console.log(res);
